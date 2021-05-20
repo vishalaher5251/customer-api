@@ -14,7 +14,7 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 	<http:listener-config name="customer-system-api-httpListenerConfig">
         <http:listener-connection host="${http.host}" port="${http.port}" />
     </http:listener-config>
-	<configuration-properties doc:name="Configuration properties" doc:id="1d100d06-77bf-4059-82f3-6a9832bba740" file="customer-system-${env}.yaml" />
+	<configuration-properties doc:name="Configuration properties" doc:id="1d100d06-77bf-4059-82f3-6a9832bba740" file="customer-system-PROD.yaml" />
 	<configuration doc:name="Configuration" doc:id="ada30c97-270d-484c-8d12-ea5bc450b62c" defaultErrorHandler-ref="globalError_Handler" />
 	<error-handler name="globalError_Handler" doc:id="a3060d85-def6-473e-a392-c30492deafe7" >
 		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="63cf4c9c-fcb5-44b4-ac44-149161a98437" type="DB:CONNECTIVITY">
