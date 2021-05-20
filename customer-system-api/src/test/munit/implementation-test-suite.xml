@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="implementation-test-suite.xml" />
+	<munit:test name="implementation-test-suite-GETallCustomersFlowTest" doc:id="1692a101-e9e5-4b22-9c8a-5a4466c98989" description="Test">
+		<munit:execution >
+			<munit:set-null-payload doc:name="Set null payload" doc:id="d6eef2ac-5f28-4133-9cc3-e4813551163e" />
+			<flow-ref doc:name="Flow-ref to GETallCustomersFlow" doc:id="203caacb-2c96-4946-9533-31bbbe36a772" name="GETallCustomersFlow"/>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-that doc:name="Assert that" doc:id="ac6ba1e2-74a3-47af-b254-3350686922ff" expression="#[payload]" is="#[MunitTools::notNullValue()]" message='"Retrieved Null Payload"'/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="implementation-test-suite-GETCustomerbyIDFlowTest" doc:id="62f006fa-8ebe-4abd-b306-789c13db7e81" description="Test">
+		<munit:execution >
+			<munit:set-null-payload doc:name="Set null payload" doc:id="9c2bca5a-61ce-4d23-8c0a-6c7f3af2e31d" />
+			<munit:set-event doc:name="Set Event" doc:id="2e585338-9981-49a2-b54f-3318c699e8be" >
+				<munit:variables >
+					<munit:variable key="CID" value="10001" mediaType="application/json" />
+				</munit:variables>
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to GETCustomerbyIDFlow" doc:id="c9bb4012-33ae-4cf0-af0b-06ea9e9c0428" name="GETCustomerbyIDFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="226abb1c-ee4c-491a-84c2-a5cf7f2038e4" actual="#[payload]" expected='#[{&#10;    "customerNumber": 10001,&#10;    "country": "India",&#10;    "contactFirstName": null,&#10;    "city": "Ainavilli",&#10;    "contactLastName": null,&#10;    "phone": "+91-905-5585-461",&#10;    "postalCode": "533211",&#10;    "addressLine2": null,&#10;    "addressLine1": null,&#10;    "salesRepEmployeeNumber": 1222,&#10;    "state": "ANDHRA PRADESH",&#10;    "customerName": "Julian Thomson",&#10;    "creditLimit": 100000.0&#10;}]'/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="implementation-test-suite-DeleteCustomerbyIDFlowTest" doc:id="b20f058c-e694-4058-ab77-cd2210245c2b" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="a61be896-1325-4606-86f9-392119bc1796" processor="db:delete">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="a08ecd43-41b8-400a-8d7d-e51652af3af3" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-null-payload doc:name="Set null payload" doc:id="e2b47e16-8082-4cc0-9fc0-c2bd87f892b7" />
+			<flow-ref doc:name="Flow-ref to DeleteCustomerbyIDFlow" doc:id="775135c6-8bdb-4718-9a9c-4cbafbf072c4" name="DeleteCustomerbyIDFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="558295d0-4061-42b7-9f62-5a0f0a3c53a4" actual="#[payload]" expected='#[{&#10;	message: "Customer Data deleted for the given ID."&#10;}]'/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="implementation-test-suite-VariableSub_FlowTest" doc:id="7097dfe1-23eb-4ee3-af16-456da22f4119" description="Test">
+		<munit:execution >
+			<munit:set-null-payload doc:name="Set null payload" doc:id="51ccaa68-8cb7-47fb-9692-2799f76b05ee" />
+			<munit:set-event doc:name="Set Event" doc:id="b111ebc9-5081-454e-985b-44c0187c4f72" >
+				<munit:payload value='{&#10;    "country": "India",&#10;    "contactFirstName": null,&#10;    "city": "Ainavilli",&#10;    "contactLastName": null,&#10;    "phone": "+91-905-5585-461",&#10;    "postalCode": "533211",&#10;    "addressLine2": null,&#10;    "addressLine1": null,&#10;    "salesRepEmployeeNumber": 1222,&#10;    "state": "ANDHRA PRADESH",&#10;    "customerName": "Julian Thomson",&#10;    "creditLimit": 100000.0&#10;}' mediaType="application/json" />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to VariableSub_Flow" doc:id="751f43d1-81da-40f9-b433-84b270952a47" name="VariableSub_Flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-equals doc:name="Assert equals Customer Name" doc:id="632e709a-038a-4563-90ae-964188eb068d" actual="#[vars.customerName]" expected='#["Julian Thomson"]' message='"Customer Name not added to variable"'/>
+			<munit-tools:assert-equals doc:name="Assert equals Phone" doc:id="d4520b1f-ea95-4b62-b155-a872a18dff29" actual="#[vars.phone]" expected='#["+91-905-5585-461"]' message='"Phone number not added to variable"'/>
+			<munit-tools:assert-equals doc:name="Assert equals City" doc:id="7f04042b-051d-48d2-adab-f24c40b1c302" actual="#[vars.city]" expected='#["Ainavilli"]'/>
+			<munit-tools:assert-equals doc:name="Assert equals State" doc:id="b62a3012-7992-493e-99e9-2af0720fc549" actual="#[vars.state]" expected='#["ANDHRA PRADESH"]'/>
+			<munit-tools:assert-equals doc:name="Assert equals PostalCode" doc:id="34ffb8b6-3988-4e6b-a331-023fb18cec5e" actual="#[vars.postalCode]" expected='#["533211"]'/>
+			<munit-tools:assert-equals doc:name="Assert equals Country" doc:id="ee76aa0c-cff7-4671-a5a4-8d7b9b11b734" actual="#[vars.country]" expected='#["India"]'/>
+			<munit-tools:assert-equals doc:name="Assert equals salesRepEmployeeNumber" doc:id="5926ab26-95c7-45f5-b9c1-69081e9efefe" actual="#[vars.salesRepEmployeeNumber]" expected="#[1222]"/>
+			<munit-tools:assert-equals doc:name="Assert equals Credit Limit" doc:id="1aca7a23-e09c-4220-a51a-63d81632f200" actual="#[vars.creditLimit]" expected="#[100000.0]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="implementation-test-suite-POSTCustomerDataFlowTest" doc:id="18383ca3-eee9-4eda-9620-70f3ebd3c8fb" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when insert" doc:id="79e317bf-b144-44f7-ab8f-0da8808ce1d6" processor="db:insert">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="b3614248-be32-4da4-87ed-f1e452d059e8" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when query-single" doc:id="3ddccb22-76e5-499d-a0d5-205ee6ba7339" processor="db:query-single">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6387c2c3-3896-4a20-80ff-a64fd20da991" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[{&#10;	"max(customerNumber)": 10001&#10;}]' mediaType="application/java" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-null-payload doc:name="Set null payload" doc:id="e9ef4b7f-3692-447a-8af6-26e70725dd86" />
+			<munit:set-event doc:name="Set Event" doc:id="2286d084-4346-47a1-9976-c4245e01da66" >
+				<munit:payload value='{&#10;    "country": "India",&#10;    "contactFirstName": null,&#10;    "city": "Ainavilli",&#10;    "contactLastName": null,&#10;    "phone": "+91-905-5585-461",&#10;    "postalCode": "533211",&#10;    "addressLine2": null,&#10;    "addressLine1": null,&#10;    "salesRepEmployeeNumber": 1222,&#10;    "state": "ANDHRA PRADESH",&#10;    "customerName": "Julian Thomson",&#10;    "creditLimit": 100000.0&#10;}' mediaType="application/json" />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to POSTCustomerDataFlow" doc:id="356be651-8ae0-4cf1-bdad-2074a4ba1604" name="POSTCustomerDataFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="c2bf81a4-e899-48d5-a839-1e30f16b57e5" actual="#[payload]" expected='#[{&#10;	message: "Customer Data added with CustomerNumber: 10001"&#10;}]' message="Not inserted"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="implementation-test-suite-PUTCustomerDataFlowTest" doc:id="564147ba-33a4-4d31-8104-e73ca24e7a93" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="1a0a5831-88e5-474d-9bba-629f22751526" processor="db:update">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="7a14234e-ea74-4a9e-a3dc-d3b335a8fa27" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-null-payload doc:name="Set null payload" doc:id="1e3450a1-f809-4686-afe5-0b43b66c8948" />
+			<munit:set-event doc:name="Set Event" doc:id="d9eb50cb-662b-4418-b7c2-94e8fd3b1f0f" >
+				<munit:payload value='{&#10;    "country": "India",&#10;    "contactFirstName": null,&#10;    "city": "Ainavilli",&#10;    "contactLastName": null,&#10;    "phone": "+91-905-5585-461",&#10;    "postalCode": "533211",&#10;    "addressLine2": null,&#10;    "addressLine1": null,&#10;    "salesRepEmployeeNumber": 1222,&#10;    "state": "ANDHRA PRADESH",&#10;    "customerName": "Julian Thomson",&#10;    "creditLimit": 100000.0&#10;}' mediaType="application/json" />
+				<munit:variables >
+					<munit:variable key="CID" value="10001" />
+				</munit:variables>
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to PUTCustomerDataFlow" doc:id="66a5ebf8-89db-4d2a-b83c-5b762e03ecf3" name="PUTCustomerDataFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="53e0d142-7cf2-46da-981d-0362a88b879f" actual="#[payload]" expected='#[{&#10;	message: "Customer Data with given CID Updated."&#10;}]'/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="implementation-test-suite-PUTCustomerDataFlowTest1" doc:id="ea2aed3a-fab8-489d-b996-a9f938d076a5" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="d0c1750b-1deb-40c4-8725-47e76fb6176b" processor="db:insert">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="7446a26b-0aac-4f97-b5c3-68313e032c98" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="048da8ba-3685-43eb-8ee8-c398743ecf26" processor="db:query-single" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="ef02ecce-8027-4c95-b71f-943b5269e572" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[{&#10;	"max(customerNumber)": 10001&#10;}]' mediaType="application/java" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-null-payload doc:name="Set null payload" doc:id="104e5b3f-122a-4e5c-80a5-a89d46783844" />
+			<munit:set-event doc:name="Set Event" doc:id="b685b8d2-65c2-47ad-aef7-20462bfa326e" >
+				<munit:payload value='{&#10;    "country": "India",&#10;    "contactFirstName": null,&#10;    "city": "Ainavilli",&#10;    "contactLastName": null,&#10;    "phone": "+91-905-5585-461",&#10;    "postalCode": "533211",&#10;    "addressLine2": null,&#10;    "addressLine1": null,&#10;    "salesRepEmployeeNumber": 1222,&#10;    "state": "ANDHRA PRADESH",&#10;    "customerName": "Julian Thomson",&#10;    "creditLimit": 100000.0&#10;}' mediaType="application/json" />
+				<munit:variables >
+					<munit:variable key="CID" value="1000001" />
+				</munit:variables>
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to PUTCustomerDataFlow" doc:id="822d1431-6efe-4a43-9e41-5cabe45fb0ea" name="PUTCustomerDataFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="8ab159fa-386a-4013-833d-d80c04ba6a98" actual="#[payload]" expected='#[{&#10;	message: "Customer Data added with CustomerNumber: 10001"&#10;}]'/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="implementation-test-suite-PATCHCustomerDatabyIDFlowTest" doc:id="e4445e1b-b497-4da5-bb68-ad528c2fca5a" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="e3725851-b6af-4b19-af59-20487a0d9363" processor="db:update">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="3b22552f-da14-48e4-ac46-64f44422586d" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-null-payload doc:name="Set null payload" doc:id="288d6ab7-0292-47f1-981e-16db7d4a47dc" />
+			<munit:set-event doc:name="Set Event" doc:id="cddf237a-7b0f-49d1-a817-a6ca8c93085a" >
+				<munit:payload value='{&#10;    "country": "India",&#10;    "contactFirstName": null,&#10;    "city": "Ainavilli",&#10;    "contactLastName": null,&#10;    "phone": "+91-905-5585-461",&#10;    "postalCode": "533211",&#10;    "addressLine2": null,&#10;    "addressLine1": null,&#10;    "salesRepEmployeeNumber": 1222,&#10;    "state": "ANDHRA PRADESH",&#10;    "customerName": "Julian Thomson",&#10;    "creditLimit": 100000.0&#10;}' mediaType="application/json" />
+				<munit:variables >
+					<munit:variable key="CID" value="10001" />
+				</munit:variables>
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to PATCHCustomerDatabyIDFlow" doc:id="55961edb-2d5b-47f5-93a9-c3683a085038" name="PATCHCustomerDatabyIDFlow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="9c1e58dd-c583-46d9-b7ff-be42c19b5ca1" actual="#[payload]" expected='#[{&#10;	message: "Customer Data with given CID Updated."&#10;}]'/>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>

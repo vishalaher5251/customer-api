@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="customers" format="json">
+      <types:shape format="weave" example="metadata/customersMetadata.json"><![CDATA[%dw 2.0
+
+type customers = Array<{|  customerNumber: Number {"typeId": "int"},   customerName: String,   contactLastName: String,   contactFirstName: String,   phone: String,   addressLine1: String,   addressLine2: String,   city: String,   state: String,   postalCode: String,   country: String,   salesRepEmployeeNumber: Number {"typeId": "int"},   creditLimit: Number {"typeId": "int"}|}> {"example": "[{\\\"customerNumber\\\":10001,\\\"customerName\\\":\\\"Julian Thomson\\\",\\\"contactLastName\\\":\\\"contactName\\\",\\\"contactFirstName\\\":\\\"contactName\\\",\\\"phone\\\":\\\"+91-905-5585-461\\\",\\\"addressLine1\\\":\\\"Velagapudi, Guntur\\\",\\\"addressLine2\\\":\\\"Velagapudi\\\",\\\"city\\\":\\\"Ainavilli\\\",\\\"state\\\":\\\"ANDHRA PRADESH\\\",\\\"postalCode\\\":\\\"533211\\\",\\\"country\\\":\\\"India\\\",\\\"salesRepEmployeeNumber\\\":1222,\\\"creditLimit\\\":100000}]"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#61f15dd6-a5c7-4edc-8a73-51d30132610d"/>
+</types:mule>

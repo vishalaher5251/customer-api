@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="fd1a6ee4-d525-45fd-8dba-1f99c675fa4c" >
+		<db:my-sql-connection host="${db.host}" port="${db.port}" user="${db.user}" password="${db.password}" database="${db.database}" />
+	</db:config>
+	<http:listener-config name="customer-system-api-httpListenerConfig">
+        <http:listener-connection host="${http.host}" port="${http.port}" />
+    </http:listener-config>
+	<configuration-properties doc:name="Configuration properties" doc:id="1d100d06-77bf-4059-82f3-6a9832bba740" file="customer-system-${env}.yaml" />
+	<configuration doc:name="Configuration" doc:id="ada30c97-270d-484c-8d12-ea5bc450b62c" defaultErrorHandler-ref="globalError_Handler" />
+	<error-handler name="globalError_Handler" doc:id="a3060d85-def6-473e-a392-c30492deafe7" >
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="63cf4c9c-fcb5-44b4-ac44-149161a98437" type="DB:CONNECTIVITY">
+			<set-payload value='#["Error in Database Connectivity. Details: " ++ error.description]' doc:name="Error Payload" doc:id="b9feb8c5-4755-4f1a-9ce7-e74f37972ddd" />
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="679edec1-63f3-46ff-89c4-78175e853e0c" type="DB:QUERY_EXECUTION">
+			<set-payload value='#["Error in SQL Query Execution. Details: " ++ error.description]' doc:name="Error Payload" doc:id="9a164dd3-126a-4df6-97df-44964a400c1d" />
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="0bde70ba-a15d-42bd-bb66-fadaeafdb2c2" type="ANY">
+			<set-payload value='#["Error occurred. Details : " ++ error.description]' doc:name="Error Payload" doc:id="1394a6ca-e902-4593-b5da-6600fc3967f7" />
+		</on-error-propagate>
+	</error-handler>
+	
+	
+</mule>

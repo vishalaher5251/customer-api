@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	
+	<flow name="GETallCustomersFlow" doc:id="e0a9ca60-95e1-45b6-828f-528798e89ed2" >
+		<db:select doc:name="Select all Customers" doc:id="2f67f1ba-0d2d-4ded-a40a-b557af1fc61b" config-ref="Database_Config">
+			<db:sql ><![CDATA[select * from Customers;]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transforming to JSON" doc:id="61f15dd6-a5c7-4edc-8a73-51d30132610d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="GETCustomerbyIDFlow" doc:id="9ae91d0f-4c3c-4cb6-b331-02a0b8f68096" >
+		<db:query-single doc:name="Select Customer by ID" doc:id="f89abecd-6eb2-47e0-a1e5-d52f44d44109" config-ref="Database_Config">
+			<db:sql ><![CDATA[select * from Customers where customerNumber = :cid;]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	'cid': vars.CID
+}]]]></db:input-parameters>
+		</db:query-single>
+		<choice doc:name="Choice" doc:id="f9ae9c81-6763-44a9-a8ca-9fa078c6ed39" >
+			<when expression="#[sizeOf(payload)&gt;0]">
+				<ee:transform doc:name="Transforming to JSON" doc:id="86bc8cbc-99e7-4c35-bfa3-c29c7ff26ecd">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="Transforming to JSON" doc:id="bcee29e1-e722-4f1a-883b-ed56e098d165" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+[]]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+	</flow>
+	<flow name="DeleteCustomerbyIDFlow" doc:id="775dfddd-63b2-4048-a08a-9e807ac11a71" >
+		<db:delete doc:name="Delete" doc:id="a08ecd43-41b8-400a-8d7d-e51652af3af3" config-ref="Database_Config">
+			<db:sql ><![CDATA[delete from Customers where customerNumber = :cid;]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	'cid': vars.CID
+}]]]></db:input-parameters>
+		</db:delete>
+		<ee:transform doc:name="Success Response" doc:id="3259c347-c378-4c37-961b-acdea4470661" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Customer Data deleted for the given ID."
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<sub-flow name="VariableSub_Flow" doc:id="27a1b7d4-33c4-445b-aaf2-313f4b4ddb73" >
+		<set-variable value="#[payload.customerName]" doc:name="Customer Name" doc:id="9a3ecc90-e2c4-4304-b8f1-57e267f3f00c" variableName="customerName"/>
+		<set-variable value="#[payload.contactLastName]" doc:name="Contact Last Name" doc:id="62edc098-6327-483d-9b41-1a558a1eaf70" variableName="contactLastName"/>
+		<set-variable value="#[payload.contactFirstName]" doc:name="Contact First Name" doc:id="1b931de0-3638-4e28-bcd9-17236b57f9d6" variableName="contactFirstName"/>
+		<set-variable value="#[payload.phone]" doc:name="Phone" doc:id="a963630d-72d3-4380-9007-4ba9edcfea29" variableName="phone"/>
+		<set-variable value="#[payload.addressLine1]" doc:name="Address Line-1" doc:id="ea4b816c-753e-4965-b219-5f939809b5e4" variableName="addressLine1"/>
+		<set-variable value="#[payload.addressLine2]" doc:name="Address Line-2" doc:id="9cd0b25a-f14c-4aea-937b-3437d0691abd" variableName="addressLine2"/>
+		<set-variable value="#[payload.city]" doc:name="City" doc:id="3be0c3d5-b588-4d92-8ac8-68152b530d0e" variableName="city"/>
+		<set-variable value="#[payload.state]" doc:name="State" doc:id="2ee0c586-f86f-48db-958b-1fa7b814dd2b" variableName="state"/>
+		<set-variable value="#[payload.postalCode]" doc:name="Postal Code" doc:id="bd834058-54fc-4918-8498-88a404fc6d08" variableName="postalCode"/>
+		<set-variable value="#[payload.country]" doc:name="Country" doc:id="f0ba8d42-6e5c-4542-be5e-4faaff018cef" variableName="country"/>
+		<set-variable value="#[payload.salesRepEmployeeNumber]" doc:name="Sales Rep Employee Number" doc:id="5eeade17-ffc9-4eb7-88c7-c735297f1084" variableName="salesRepEmployeeNumber"/>
+		<set-variable value="#[payload.creditLimit]" doc:name="Credit Limit" doc:id="0cdd886e-2b29-4530-a222-8e51e2b5fa43" variableName="creditLimit"/>
+	</sub-flow>
+	<flow name="POSTCustomerDataFlow" doc:id="5e69349b-3f12-4497-9d19-5bbba0577834" >
+		<flow-ref doc:name="Variable Sub_Flow Reference" doc:id="bbdd0344-4ea8-40ba-bc9a-b682c971e295" name="VariableSub_Flow"/>
+		<db:insert doc:name="Insert" doc:id="b3614248-be32-4da4-87ed-f1e452d059e8" config-ref="Database_Config">
+			<db:sql ><![CDATA[insert into Customers(customerName, contactLastName, contactFirstName, phone, addressLine1, addressLine2, city, state, postalCode, country, salesRepEmployeeNumber, creditLimit) 
+values(:CuN, :ClN, :CfN, :phone, :add1, :add2, :city, :state, :pincode, :country, :Eno, :cl)]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	'CuN': vars.customerName,
+	'ClN': vars.contactLastName,
+	'CfN': vars.contactFirstName,
+	'phone': vars.phone,
+	'add1': vars.addressLine1,
+	'add2': vars.addressLine2,
+	'city': vars.city,
+	'state': vars.state,
+	'pincode': vars.postalCode,
+	'country': vars.country,
+	'Eno': vars.salesRepEmployeeNumber,
+	'cl': vars.creditLimit
+}]]]></db:input-parameters>
+		</db:insert>
+		<db:query-single doc:name="Select max(customerNumber)" doc:id="6387c2c3-3896-4a20-80ff-a64fd20da991" config-ref="Database_Config">
+			<db:sql ><![CDATA[select max(customerNumber) from Customers;]]></db:sql>
+		</db:query-single>
+		<ee:transform doc:name="Success Response" doc:id="557f6fe1-d30b-4b40-9c1f-931bdc06902f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Customer Data added with CustomerNumber: " ++ payload."max(customerNumber)" as Number
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<set-variable value="201" doc:name="httpStatus" doc:id="7db1df98-b65d-48b6-aed8-7b6d37751c47" variableName="httpStatus"/>
+	</flow>
+	<flow name="PUTCustomerDataFlow" doc:id="2957c733-cba4-40af-9f44-89c60d2adb25" >
+		<flow-ref doc:name="Variable Sub_Flow Reference" doc:id="4e597ecc-7518-441a-9cf0-0b4debc94b97" name="VariableSub_Flow"/>
+		<db:query-single doc:name="Select Customer By ID" doc:id="a88d3f35-984c-41a2-9665-5d9449026ea8" config-ref="Database_Config" >
+			<db:sql ><![CDATA[select * from Customers where customerNumber = :cid;]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	'cid': vars.CID
+}]]]></db:input-parameters>
+		</db:query-single>
+		<choice doc:name="Choice" doc:id="2621430d-4dad-4604-9b08-b9be471e82b8" >
+			<when expression="#[sizeOf(payload)&gt;0]">
+				<db:update doc:name="Update" doc:id="7a14234e-ea74-4a9e-a3dc-d3b335a8fa27" config-ref="Database_Config">
+					<db:sql ><![CDATA[update Customers set customerName = :CuN, contactLastName = :ClN, contactFirstName = :CfN, phone = :phone, addressLine1 = :add1, addressLine2 = :add2, city = :city, state = :state, postalCode = :pincode, country = :country, salesRepEmployeeNumber = :Eno, creditLimit = :cl where customerNumber = :cid]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	'cid': vars.CID,
+	'CuN': vars.customerName,
+	'ClN': vars.contactLastName,
+	'CfN': vars.contactFirstName,
+	'phone': vars.phone,
+	'add1': vars.addressLine1,
+	'add2': vars.addressLine2,
+	'city': vars.city,
+	'state': vars.state,
+	'pincode': vars.postalCode,
+	'country': vars.country,
+	'Eno': vars.salesRepEmployeeNumber,
+	'cl': vars.creditLimit
+}]]]></db:input-parameters>
+				</db:update>
+				<ee:transform doc:name="Success Update Response" doc:id="e58b0e44-53cb-4c48-b24c-acc5e7356b11" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Customer Data with given CID Updated."
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<otherwise >
+				<db:insert doc:name="Insert" doc:id="7446a26b-0aac-4f97-b5c3-68313e032c98" config-ref="Database_Config" >
+					<db:sql ><![CDATA[insert into Customers(customerName, contactLastName, contactFirstName, phone, addressLine1, addressLine2, city, state, postalCode, country, salesRepEmployeeNumber, creditLimit) 
+values(:CuN, :ClN, :CfN, :phone, :add1, :add2, :city, :state, :pincode, :country, :Eno, :cl)]]></db:sql>
+					<db:input-parameters ><![CDATA[#[{
+	'CuN': vars.customerName,
+	'ClN': vars.contactLastName,
+	'CfN': vars.contactFirstName,
+	'phone': vars.phone,
+	'add1': vars.addressLine1,
+	'add2': vars.addressLine2,
+	'city': vars.city,
+	'state': vars.state,
+	'pincode': vars.postalCode,
+	'country': vars.country,
+	'Eno': vars.salesRepEmployeeNumber,
+	'cl': vars.creditLimit
+}]]]></db:input-parameters>
+				</db:insert>
+				<db:query-single doc:name="Select max(customerNumber)" doc:id="ef02ecce-8027-4c95-b71f-943b5269e572" config-ref="Database_Config">
+					<db:sql ><![CDATA[select max(customerNumber) from Customers;]]></db:sql>
+				</db:query-single>
+				<ee:transform doc:name="Success Insert Response" doc:id="08d1feb7-ea7e-431b-905f-a0bcea3bae14" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Customer Data added with CustomerNumber: " ++ payload."max(customerNumber)" as Number
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<set-variable value="201" doc:name="httpStatus" doc:id="aebd84cf-c8dc-4dff-b916-b58df11290e1" variableName="httpStatus" />
+			</otherwise>
+		</choice>
+	</flow>
+	<flow name="PATCHCustomerDatabyIDFlow" doc:id="d64e9a56-27f5-477b-a5b0-1511d2cee578">
+		<flow-ref doc:name="Variable Sub_Flow Reference" doc:id="a196e614-8542-4ee9-8da1-7c0c5332a763" name="VariableSub_Flow" />
+		<db:query-single doc:name="Select Customer By ID" doc:id="85275031-6366-4da0-99e8-06dd6af59d9f" config-ref="Database_Config">
+			<db:sql><![CDATA[select * from Customers where customerNumber = :cid;]]></db:sql>
+			<db:input-parameters><![CDATA[#[{
+	'cid': vars.CID
+}]]]></db:input-parameters>
+		</db:query-single>
+		<db:update doc:name="Update" doc:id="3b22552f-da14-48e4-ac46-64f44422586d" config-ref="Database_Config">
+			<db:sql><![CDATA[update Customers set customerName = :CuN, contactLastName = :ClN, contactFirstName = :CfN, phone = :phone, addressLine1 = :add1, addressLine2 = :add2, city = :city, state = :state, postalCode = :pincode, country = :country, salesRepEmployeeNumber = :Eno, creditLimit = :cl where customerNumber = :cid;]]></db:sql>
+			<db:input-parameters><![CDATA[#[{
+	'cid': vars.CID,
+	'CuN': vars.customerName default payload.customerName,
+	'ClN': vars.contactLastName default payload.contactLastName,
+	'CfN': vars.contactFirstName default payload.contactFirstName,
+	'phone': vars.phone default payload.phone,
+	'add1': vars.addressLine1 default payload.addressLine1,
+	'add2': vars.addressLine2 default payload.addressLine2,
+	'city': vars.city default payload.city,
+	'state': vars.state default payload.state,
+	'pincode': vars.postalCode default payload.postalCode,
+	'country': vars.country default payload.country,
+	'Eno': vars.salesRepEmployeeNumber default payload.salesRepEmployeeNumber,
+	'cl': vars.creditLimit default payload.creditLimit
+}]]]></db:input-parameters>
+		</db:update>
+		<ee:transform doc:name="Success Response" doc:id="04f5b98f-912b-4f4a-855b-af231ce742cb">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "Customer Data with given CID Updated."
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
