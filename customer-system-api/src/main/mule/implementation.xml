@@ -80,12 +80,13 @@ output application/json
 		<set-variable value="#[payload.country]" doc:name="Country" doc:id="f0ba8d42-6e5c-4542-be5e-4faaff018cef" variableName="country"/>
 		<set-variable value="#[payload.salesRepEmployeeNumber]" doc:name="Sales Rep Employee Number" doc:id="5eeade17-ffc9-4eb7-88c7-c735297f1084" variableName="salesRepEmployeeNumber"/>
 		<set-variable value="#[payload.creditLimit]" doc:name="Credit Limit" doc:id="0cdd886e-2b29-4530-a222-8e51e2b5fa43" variableName="creditLimit"/>
+		<set-variable value="#[payload.email]" doc:name="Email" doc:id="be4390d7-4889-4a85-9199-e72dcaa49010" variableName="Email"/>
 	</sub-flow>
 	<flow name="POSTCustomerDataFlow" doc:id="5e69349b-3f12-4497-9d19-5bbba0577834" >
 		<flow-ref doc:name="Variable Sub_Flow Reference" doc:id="bbdd0344-4ea8-40ba-bc9a-b682c971e295" name="VariableSub_Flow"/>
 		<db:insert doc:name="Insert" doc:id="b3614248-be32-4da4-87ed-f1e452d059e8" config-ref="Database_Config">
-			<db:sql ><![CDATA[insert into Customers(customerName, contactLastName, contactFirstName, phone, addressLine1, addressLine2, city, state, postalCode, country, salesRepEmployeeNumber, creditLimit) 
-values(:CuN, :ClN, :CfN, :phone, :add1, :add2, :city, :state, :pincode, :country, :Eno, :cl)]]></db:sql>
+			<db:sql ><![CDATA[insert into Customers(customerName, contactLastName, contactFirstName, phone, addressLine1, addressLine2, city, state, postalCode, country, salesRepEmployeeNumber, creditLimit, email) 
+values(:CuN, :ClN, :CfN, :phone, :add1, :add2, :city, :state, :pincode, :country, :Eno, :cl, :email)]]></db:sql>
 			<db:input-parameters ><![CDATA[#[{
 	'CuN': vars.customerName,
 	'ClN': vars.contactLastName,
@@ -98,7 +99,8 @@ values(:CuN, :ClN, :CfN, :phone, :add1, :add2, :city, :state, :pincode, :country
 	'pincode': vars.postalCode,
 	'country': vars.country,
 	'Eno': vars.salesRepEmployeeNumber,
-	'cl': vars.creditLimit
+	'cl': vars.creditLimit,
+	'email': vars.Email
 }]]]></db:input-parameters>
 		</db:insert>
 		<db:query-single doc:name="Select max(customerNumber)" doc:id="6387c2c3-3896-4a20-80ff-a64fd20da991" config-ref="Database_Config">
@@ -114,7 +116,6 @@ output application/json
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<set-variable value="201" doc:name="httpStatus" doc:id="7db1df98-b65d-48b6-aed8-7b6d37751c47" variableName="httpStatus"/>
 	</flow>
 	<flow name="PUTCustomerDataFlow" doc:id="2957c733-cba4-40af-9f44-89c60d2adb25" >
 		<flow-ref doc:name="Variable Sub_Flow Reference" doc:id="4e597ecc-7518-441a-9cf0-0b4debc94b97" name="VariableSub_Flow"/>
@@ -127,7 +128,7 @@ output application/json
 		<choice doc:name="Choice" doc:id="2621430d-4dad-4604-9b08-b9be471e82b8" >
 			<when expression="#[sizeOf(payload)&gt;0]">
 				<db:update doc:name="Update" doc:id="7a14234e-ea74-4a9e-a3dc-d3b335a8fa27" config-ref="Database_Config">
-					<db:sql ><![CDATA[update Customers set customerName = :CuN, contactLastName = :ClN, contactFirstName = :CfN, phone = :phone, addressLine1 = :add1, addressLine2 = :add2, city = :city, state = :state, postalCode = :pincode, country = :country, salesRepEmployeeNumber = :Eno, creditLimit = :cl where customerNumber = :cid]]></db:sql>
+					<db:sql ><![CDATA[update Customers set customerName = :CuN, contactLastName = :ClN, contactFirstName = :CfN, phone = :phone, addressLine1 = :add1, addressLine2 = :add2, city = :city, state = :state, postalCode = :pincode, country = :country, salesRepEmployeeNumber = :Eno, creditLimit = :cl, email = :email where customerNumber = :cid]]></db:sql>
 					<db:input-parameters ><![CDATA[#[{
 	'cid': vars.CID,
 	'CuN': vars.customerName,
@@ -141,7 +142,8 @@ output application/json
 	'pincode': vars.postalCode,
 	'country': vars.country,
 	'Eno': vars.salesRepEmployeeNumber,
-	'cl': vars.creditLimit
+	'cl': vars.creditLimit,
+	'email': vars.Email
 }]]]></db:input-parameters>
 				</db:update>
 				<ee:transform doc:name="Success Update Response" doc:id="e58b0e44-53cb-4c48-b24c-acc5e7356b11" >
@@ -157,8 +159,8 @@ output application/json
 			</when>
 			<otherwise >
 				<db:insert doc:name="Insert" doc:id="7446a26b-0aac-4f97-b5c3-68313e032c98" config-ref="Database_Config" >
-					<db:sql ><![CDATA[insert into Customers(customerName, contactLastName, contactFirstName, phone, addressLine1, addressLine2, city, state, postalCode, country, salesRepEmployeeNumber, creditLimit) 
-values(:CuN, :ClN, :CfN, :phone, :add1, :add2, :city, :state, :pincode, :country, :Eno, :cl)]]></db:sql>
+					<db:sql ><![CDATA[insert into Customers(customerName, contactLastName, contactFirstName, phone, addressLine1, addressLine2, city, state, postalCode, country, salesRepEmployeeNumber, creditLimit, email) 
+values(:CuN, :ClN, :CfN, :phone, :add1, :add2, :city, :state, :pincode, :country, :Eno, :cl, :email)]]></db:sql>
 					<db:input-parameters ><![CDATA[#[{
 	'CuN': vars.customerName,
 	'ClN': vars.contactLastName,
@@ -171,7 +173,8 @@ values(:CuN, :ClN, :CfN, :phone, :add1, :add2, :city, :state, :pincode, :country
 	'pincode': vars.postalCode,
 	'country': vars.country,
 	'Eno': vars.salesRepEmployeeNumber,
-	'cl': vars.creditLimit
+	'cl': vars.creditLimit,
+	'email': vars.Email
 }]]]></db:input-parameters>
 				</db:insert>
 				<db:query-single doc:name="Select max(customerNumber)" doc:id="ef02ecce-8027-4c95-b71f-943b5269e572" config-ref="Database_Config">
@@ -200,7 +203,7 @@ output application/json
 }]]]></db:input-parameters>
 		</db:query-single>
 		<db:update doc:name="Update" doc:id="3b22552f-da14-48e4-ac46-64f44422586d" config-ref="Database_Config">
-			<db:sql><![CDATA[update Customers set customerName = :CuN, contactLastName = :ClN, contactFirstName = :CfN, phone = :phone, addressLine1 = :add1, addressLine2 = :add2, city = :city, state = :state, postalCode = :pincode, country = :country, salesRepEmployeeNumber = :Eno, creditLimit = :cl where customerNumber = :cid;]]></db:sql>
+			<db:sql><![CDATA[update Customers set customerName = :CuN, contactLastName = :ClN, contactFirstName = :CfN, phone = :phone, addressLine1 = :add1, addressLine2 = :add2, city = :city, state = :state, postalCode = :pincode, country = :country, salesRepEmployeeNumber = :Eno, creditLimit = :cl, email = :email where customerNumber = :cid;]]></db:sql>
 			<db:input-parameters><![CDATA[#[{
 	'cid': vars.CID,
 	'CuN': vars.customerName default payload.customerName,
@@ -214,7 +217,8 @@ output application/json
 	'pincode': vars.postalCode default payload.postalCode,
 	'country': vars.country default payload.country,
 	'Eno': vars.salesRepEmployeeNumber default payload.salesRepEmployeeNumber,
-	'cl': vars.creditLimit default payload.creditLimit
+	'cl': vars.creditLimit default payload.creditLimit,
+	'email': vars.Email default payload.email
 }]]]></db:input-parameters>
 		</db:update>
 		<ee:transform doc:name="Success Response" doc:id="04f5b98f-912b-4f4a-855b-af231ce742cb">

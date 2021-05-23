@@ -123,13 +123,6 @@
 			<classifier>mule-plugin</classifier>
 		</dependency>
 		<dependency>
-			<groupId>a3cc40ce-d344-47ff-88d5-7f0117a10f52</groupId>
-			<artifactId>customer-system-api</artifactId>
-			<version>1.0.0</version>
-			<classifier>raml</classifier>
-			<type>zip</type>
-		</dependency>
-		<dependency>
 			<groupId>org.mule.modules</groupId>
 			<artifactId>mule-apikit-module</artifactId>
 			<version>1.5.1</version>
@@ -170,6 +163,13 @@
 			<groupId>org.sonarsource.scanner.maven</groupId>
 			<artifactId>sonar-maven-plugin</artifactId>
 			<version>3.6.1.1688</version>
+		</dependency>
+		<dependency>
+			<groupId>a3cc40ce-d344-47ff-88d5-7f0117a10f52</groupId>
+			<artifactId>customer-system-api</artifactId>
+			<version>1.0.1</version>
+			<classifier>raml</classifier>
+			<type>zip</type>
 		</dependency>
 	</dependencies>
 
