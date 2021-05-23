@@ -27,8 +27,8 @@
 			</munit:set-event>
 			<flow-ref doc:name="Flow-ref to GETCustomerbyIDFlow" doc:id="c9bb4012-33ae-4cf0-af0b-06ea9e9c0428" name="GETCustomerbyIDFlow"/>
 		</munit:execution>
-		<munit:validation >
-			<munit-tools:assert-equals doc:name="Assert equals" doc:id="226abb1c-ee4c-491a-84c2-a5cf7f2038e4" actual="#[payload]" expected='#[{&#10;    "customerNumber": 10001,&#10;    "country": "India",&#10;    "contactFirstName": null,&#10;    "city": "Ainavilli",&#10;    "contactLastName": null,&#10;    "phone": "+91-905-5585-461",&#10;    "postalCode": "533211",&#10;    "addressLine2": null,&#10;    "addressLine1": null,&#10;    "salesRepEmployeeNumber": 1222,&#10;    "state": "ANDHRA PRADESH",&#10;    "customerName": "Julian Thomson",&#10;    "creditLimit": 100000.0&#10;}]'/>
+		<munit:validation>
+			<munit-tools:assert-that doc:name="Assert that" doc:id="16d7f204-8cba-430b-b231-7d62cac19911" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
 		</munit:validation>
 	</munit:test>
 	<munit:test name="implementation-test-suite-DeleteCustomerbyIDFlowTest" doc:id="b20f058c-e694-4058-ab77-cd2210245c2b" description="Test">
@@ -51,7 +51,7 @@
 		<munit:execution >
 			<munit:set-null-payload doc:name="Set null payload" doc:id="51ccaa68-8cb7-47fb-9692-2799f76b05ee" />
 			<munit:set-event doc:name="Set Event" doc:id="b111ebc9-5081-454e-985b-44c0187c4f72" >
-				<munit:payload value='{&#10;    "country": "India",&#10;    "contactFirstName": null,&#10;    "city": "Ainavilli",&#10;    "contactLastName": null,&#10;    "phone": "+91-905-5585-461",&#10;    "postalCode": "533211",&#10;    "addressLine2": null,&#10;    "addressLine1": null,&#10;    "salesRepEmployeeNumber": 1222,&#10;    "state": "ANDHRA PRADESH",&#10;    "customerName": "Julian Thomson",&#10;    "creditLimit": 100000.0&#10;}' mediaType="application/json" />
+				<munit:payload value='{&#10;    "country": "India",&#10;    "contactFirstName": null,&#10;    "city": "Ainavilli",&#10;    "contactLastName": null,&#10;    "phone": "+91-905-5585-461",&#10;    "postalCode": "533211",&#10;    "addressLine2": null,&#10;    "addressLine1": null,&#10;    "salesRepEmployeeNumber": 1222,&#10;    "state": "ANDHRA PRADESH",&#10;    "customerName": "Julian Thomson",&#10;    "creditLimit": 100000.0,&#10;    "email": "julian.thomas@abc.com"&#10;}' mediaType="application/json" />
 			</munit:set-event>
 			<flow-ref doc:name="Flow-ref to VariableSub_Flow" doc:id="751f43d1-81da-40f9-b433-84b270952a47" name="VariableSub_Flow"/>
 		</munit:execution>
@@ -64,6 +64,7 @@
 			<munit-tools:assert-equals doc:name="Assert equals Country" doc:id="ee76aa0c-cff7-4671-a5a4-8d7b9b11b734" actual="#[vars.country]" expected='#["India"]'/>
 			<munit-tools:assert-equals doc:name="Assert equals salesRepEmployeeNumber" doc:id="5926ab26-95c7-45f5-b9c1-69081e9efefe" actual="#[vars.salesRepEmployeeNumber]" expected="#[1222]"/>
 			<munit-tools:assert-equals doc:name="Assert equals Credit Limit" doc:id="1aca7a23-e09c-4220-a51a-63d81632f200" actual="#[vars.creditLimit]" expected="#[100000.0]"/>
+			<munit-tools:assert-equals doc:name="Assert equals Email" doc:id="97972c08-2ac9-472b-84d8-6e090ee4c100" actual="#[vars.Email]" expected='#["julian.thomas@abc.com"]'/>
 		</munit:validation>
 	</munit:test>
 	<munit:test name="implementation-test-suite-POSTCustomerDataFlowTest" doc:id="18383ca3-eee9-4eda-9620-70f3ebd3c8fb" description="Test">
